@@ -109,7 +109,7 @@ function calc(){
     const kNeed=Math.ceil((lo-send-2*T)/60000);const k=Math.max(0,kNeed);if(k>kmax)continue;
     for(let kk=k;kk<=kmax;kk++){const r=send+2*T+kk*60000;if(r+60000>hi)break;const sc=Math.abs(r+30000-aim);if(!best||sc<best.sc)best={sc,u,d,t:byD.get(d),k:kk,r,a:send+T+kk*60000,aL:Math.max(lo-T,send+T+60000),aH:Math.min(hi-T,send+T+pct*T)}}}
    if(best)return best}return null}
- let rows="",okN=0,total=0;const txt=[`Карусель из ${src[0]},${src[1]}, отправка в ${hm(S)}`];
+ let rows="",okN=0,total=0;const txt=[`Карусель из ${src[0]},${src[1]}, отправка в ${hms(S)}`];
  for(let i=0,R=R1;i<N;i++,R+=step){total++;const p=pick(R,S);
   const dk=`done:${src}:${hm(R)}`;const dn=gd(dk);const cb=`<td><input type="checkbox" data-done="${dk}" ${dn?"checked":""} aria-label="Раунд ${hm(R)} закрыт"></td>`;
   if(p){okN++;txt.push(`${hm(R)} ${p.u} l+k://coordinates?${p.t[0]},${p.t[1]}&347 приб. ${R2s(p)}`);rows+=`<tr class="${dn?"done":""}">${cb}<td class="m"><b>${hm(R)}</b></td><td>${p.u}</td><td>${L(p.t)}</td><td class="m">${p.d}</td><td class="m">${R2s(p)}</td></tr>`}
@@ -117,7 +117,7 @@ function calc(){
    if(w)txt.push(`${hm(R)} ЖДАТЬ до ${hm(w.s)}: ${w.q.u} l+k://coordinates?${w.q.t[0]},${w.q.t[1]}&347 приб. ${R2s(w.q)}`);
    rows+=`<tr class="none ${dn?"done":""}">${cb}<td class="m"><b>${hm(R)}</b></td><td colspan="4">${w?`<span class="pill warn">ждать</span> отправка в <b class="m">${hm(w.s)}</b> (через <span class="m" data-to="${w.s}"></span>): ${w.q.u} → ${L(w.q.t)}, прибытие <b class="m">${R2s(w.q)}</b>`:`<span class="pill bad">не закрыть</span> выбранными юнитами`}</td></tr>`}}
  out.innerHTML=rows||'<tr><td colspan="6" class="note">Нет раундов в указанном промежутке.</td></tr>';
- $("sum").innerHTML=`Закрыто <b>${okN}</b> из ${total} раундов при отправке в ${hm(S)}`+(have?` · войск хватает на ${N} раундов по ${per}`:"")+(started?' <span class="pill bad">бой уже начался</span>':"");$("more").hidden=!!have;
+ $("sum").innerHTML=`Закрыто <b>${okN}</b> из ${total} раундов при отправке в ${hms(S)}`+(have?` · войск хватает на ${N} раундов по ${per}`:"")+(started?' <span class="pill bad">бой уже начался</span>':"");$("more").hidden=!!have;
  window._S=S;window._txt=txt.join("\n");trDom(document.body);tick()}
 function R2s(p){const lo=Math.ceil(p.aL/6e4)*6e4,hi=Math.floor(p.aH/6e4)*6e4;return lo<=hi?(lo===hi?hm(lo):hm(lo)+"–"+hm(hi)):hm(p.a)}
 function gd(k){try{return localStorage.getItem(k)==="1"}catch(e){return false}}
@@ -126,7 +126,7 @@ function tick(){const n=Date.now();if(window._S0&&autoS(n)!==window._S0){calc();
  document.querySelectorAll("[data-to]").forEach(e=>e.textContent=dur((+e.dataset.to-n)/1000))}
 document.addEventListener("input",e=>{if(e.target.dataset.done){try{e.target.checked?localStorage.setItem(e.target.dataset.done,"1"):localStorage.removeItem(e.target.dataset.done)}catch(_){}e.target.closest("tr").classList.toggle("done",e.target.checked);return}if(e.target.closest(".card"))calc()});
 $("allbtn").onclick=()=>{const b=$("allbtn");navigator.clipboard?.writeText(trS(window._txt)).then(()=>{b.textContent=trS("Скопировано");setTimeout(()=>b.textContent=trS("Скопировать всё для игрового чата"),1500)}).catch(()=>{$("alltxt").hidden=false;$("alltxt").value=trS(window._txt);$("alltxt").select()})};
-function autoS(n){const m=Math.floor(n/60000)*60000;return m+((n-m)<30000?60000:120000)}
+function autoS(n){return Math.ceil((n+15000)/10000)*10000}
 window._N=50;$("more").onclick=()=>{window._N+=50;calc()};
 document.addEventListener("click",e=>{const b=e.target.closest("[data-c]");if(!b)return;const t=b.dataset.c;
  navigator.clipboard?.writeText(t).then(()=>{b.textContent=trS("скопировано");setTimeout(calc,900)}).catch(()=>{const r=document.createRange();r.selectNodeContents(b);const s=getSelection();s.removeAllRanges();s.addRange(r)})});
