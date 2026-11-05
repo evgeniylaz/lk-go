@@ -58,12 +58,10 @@ tr.done td:first-child{opacity:1;text-decoration:none}
 <label>Первый раунд<input id="r1" type="time"></label>
 <label>Юнитов на раунд<select id="per"></select></label>
 <label>Войск в наличии (необяз.)<input id="have" type="number" min="0" placeholder="если пусто — 50 раундов"></label>
-<label>Шаг раундов, мин<input id="step" type="number" min="1" value="10"></label>
 <label>Возврат: с минуты<input id="wa" type="number" min="0" value="2"></label>
 <label>…по минуту<input id="wb" type="number" min="1" value="7"></label>
 <label class="chk"><input id="usedly" type="checkbox"> Задерживать отправление</label>
-<label id="ldly">Макс. задержка, %<input id="dly" type="number" min="0" step="0.5" value="5"></label>
-<label>Цели<select id="col"><option value="all">Все занятые</option><option value="P">Только свои (Jek)</option><option value="R">Только враги</option><option value="K">Только нейтралы</option></select></label>
+
 </div>
 <p class="note" style="margin-top:8px">Возврат «с минуты 2 по 7» — это 2–7-я минута интервала перед раундом: для раунда 19:50 юниты приходят между 19:42 и 19:47. Отправлять нужно в течение указанной минуты. «Прибытие к цели» — любое время из этого окна даст возврат в вилку, если отправишь в указанную минуту.</p></section>
 
@@ -99,12 +97,12 @@ function calc(){
  const src=[+m[1],+m[2]];const sp=speeds();
  document.querySelectorAll("[data-s]").forEach(e=>{const s=sp[e.dataset.s];e.textContent=Math.floor(s/60)+":"+pad(s%60)});
  const units=[...document.querySelectorAll("[data-u]")].filter(c=>c.checked).map(c=>c.dataset.u).sort((a,b)=>sp[b]-sp[a]);
- const col=$("col").value;const byD=new Map();
+ const col="all";const byD=new Map();
  for(const t of MAP){if(col!=="all"&&t[2]!==col)continue;const d=dist(src,t);if(!d)continue;if(!byD.has(d))byD.set(d,t)}
  const D=[...byD.keys()].sort((a,b)=>a-b);
  const now=Date.now();let S=autoS(now);window._S0=S;
  let R1=atToday($("r1").value,S);if(R1<S)R1+=864e5;const per=+ps.value,have=+$("have").value||0,N=have?Math.floor(have/per):window._N;
- const step=(+$("step").value||10)*60e3,wa=(+$("wa").value)*60e3,wb=(+$("wb").value)*60e3,pct=$("usedly").checked?(+$("dly").value||0)/100:0;$("ldly").hidden=!$("usedly").checked;
+ const step=600e3,wa=(+$("wa").value)*60e3,wb=(+$("wb").value)*60e3,pct=$("usedly").checked?0.05:0;
  function pick(R,send){const lo=R-step+wa,hi=R-step+wb,aim=(lo+hi+60e3)/2;
   for(const u of units){const v=sp[u]*1000;let best=null;
    for(const d of D){const T=d*v;const kmax=Math.floor(pct*T/60000);
