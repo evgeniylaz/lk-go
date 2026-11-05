@@ -56,7 +56,8 @@ tr.done td:first-child{opacity:1;text-decoration:none}
 
 <section class="card"><h2>Бой и отправка</h2><div class="grid">
 <label>Первый раунд<input id="r1" type="time"></label>
-<label>Последний раунд<input id="r2" type="time"></label>
+<label>Юнитов на раунд<select id="per"></select></label>
+<label>Войск в наличии (необяз.)<input id="have" type="number" min="0" placeholder="если пусто — 50 раундов"></label>
 <label>Шаг раундов, мин<input id="step" type="number" min="1" value="10"></label>
 <label>Возврат: с минуты<input id="wa" type="number" min="0" value="2"></label>
 <label>…по минуту<input id="wb" type="number" min="1" value="7"></label>
@@ -70,6 +71,7 @@ tr.done td:first-child{opacity:1;text-decoration:none}
 <section class="card"><div class="bar"><span>Сейчас <b id="now">--:--:--</b></span><span>До отправки <b id="cd">—</b></span><span id="sum"></span><button class="ghost" id="nowbtn">Отправка через 2 мин</button><button id="allbtn">Скопировать всё для игрового чата</button></div><textarea id="alltxt" hidden rows="8" style="width:100%;margin-top:8px"></textarea></section>
 
 <section class="card tbl"><table><thead><tr><th>Закрыт</th><th>Раунд</th><th>Юнит</th><th>Куда слать</th><th>Полей</th><th>Прибытие к цели (подходит)</th></tr></thead><tbody id="out"></tbody></table></section>
+<button id="more" class="ghost" hidden>Добавить ещё 50 раундов</button>
 <p class="note">Скорость = база × 0,95 (исследование) × 0,95 (компас) × (1 − бонус казармы), округление до секунды. Расстояние считается по сетке игры. Карта — снимок, цели могли смениться.</p>
 </div>
 <script>
@@ -93,7 +95,8 @@ function speeds(){const k=$("kind").value;let f=1;if(k==="castle"&&$("res").chec
 function calc(){
  const kd=$("kind").value;$("lbarr").hidden=kd!=="city";$("lres").hidden=kd!=="castle";$("lcomp").hidden=kd!=="fort";
  const m=$("src").value.match(/(\d{5})\s*,\s*(\d{5})/);const out=$("out");
- if(!m||!$("r1").value||!$("r2").value||!$("send").value){out.innerHTML='<tr><td colspan="6" class="note">Заполни: ссылку на поселение, первый и последний раунд и время отправки (или кнопка «Отправка через 2 мин»).</td></tr>';$("sum").textContent="";window._S=0;window._txt="";return}
+ const PER={castle:[51,255],fort:[251,630],city:[1251,2515]}[kd],ps=$("per");if(ps.dataset.k!==kd){const i=ps.selectedIndex>0?1:0;ps.innerHTML=PER.map(v=>`<option>${v}</option>`).join("");ps.selectedIndex=i;ps.dataset.k=kd}
+ if(!m||!$("r1").value||!$("send").value){out.innerHTML='<tr><td colspan="6" class="note">Заполни: ссылку на поселение, первый раунд и время отправки (или кнопка «Отправка через 2 мин»).</td></tr>';$("sum").textContent="";window._S=0;window._txt="";return}
  const src=[+m[1],+m[2]];const sp=speeds();
  document.querySelectorAll("[data-s]").forEach(e=>{const s=sp[e.dataset.s];e.textContent=Math.floor(s/60)+":"+pad(s%60)});
  const units=[...document.querySelectorAll("[data-u]")].filter(c=>c.checked).map(c=>c.dataset.u).sort((a,b)=>sp[b]-sp[a]);
@@ -101,7 +104,7 @@ function calc(){
  for(const t of MAP){if(col!=="all"&&t[2]!==col)continue;const d=dist(src,t);if(!d)continue;if(!byD.has(d))byD.set(d,t)}
  const D=[...byD.keys()].sort((a,b)=>a-b);
  const now=Date.now();let S=atToday($("send").value,now);if(S<now-3600e3)S+=864e5;
- let R1=atToday($("r1").value,S);if(R1<S)R1+=864e5;let R2=atToday($("r2").value,R1);if(R2<R1)R2+=864e5;
+ let R1=atToday($("r1").value,S);if(R1<S)R1+=864e5;const per=+ps.value,have=+$("have").value||0,N=have?Math.floor(have/per):window._N;
  const step=(+$("step").value||10)*60e3,wa=(+$("wa").value)*60e3,wb=(+$("wb").value)*60e3,pct=$("usedly").checked?(+$("dly").value||0)/100:0;$("ldly").hidden=!$("usedly").checked;
  function pick(R,send){const lo=R-step+wa,hi=R-step+wb,aim=(lo+hi+60e3)/2;
   for(const u of units){const v=sp[u]*1000;let best=null;
@@ -110,14 +113,14 @@ function calc(){
     for(let kk=k;kk<=kmax;kk++){const r=send+2*T+kk*60000;if(r+60000>hi)break;const sc=Math.abs(r+30000-aim);if(!best||sc<best.sc)best={sc,u,d,t:byD.get(d),k:kk,r,a:send+T+kk*60000,aL:Math.max(lo-T,send+T+60000),aH:Math.min(hi-T,send+T+pct*T)}}}
    if(best)return best}return null}
  let rows="",okN=0,total=0;const txt=[`Карусель из ${src[0]},${src[1]}, отправка в ${hm(S)}`];
- for(let R=R1;R<=R2;R+=step){total++;const p=pick(R,S);
+ for(let i=0,R=R1;i<N;i++,R+=step){total++;const p=pick(R,S);
   const dk=`done:${src}:${hm(R)}`;const dn=gd(dk);const cb=`<td><input type="checkbox" data-done="${dk}" ${dn?"checked":""} aria-label="Раунд ${hm(R)} закрыт"></td>`;
   if(p){okN++;txt.push(`${hm(R)} ${p.u} l+k://coordinates?${p.t[0]},${p.t[1]}&347 приб. ${R2s(p)}`);rows+=`<tr class="${dn?"done":""}">${cb}<td class="m"><b>${hm(R)}</b></td><td>${p.u}</td><td>${L(p.t)}</td><td class="m">${p.d}</td><td class="m">${R2s(p)}</td></tr>`}
   else{let w=null;for(let s=S+60000;s<R;s+=60000){const q=pick(R,s);if(q){w={s,q};break}}
    if(w)txt.push(`${hm(R)} ЖДАТЬ до ${hm(w.s)}: ${w.q.u} l+k://coordinates?${w.q.t[0]},${w.q.t[1]}&347 приб. ${R2s(w.q)}`);
    rows+=`<tr class="none ${dn?"done":""}">${cb}<td class="m"><b>${hm(R)}</b></td><td colspan="4">${w?`<span class="pill warn">ждать</span> отправка в <b class="m">${hm(w.s)}</b> (через <span class="m" data-to="${w.s}"></span>): ${w.q.u} → ${L(w.q.t)}, прибытие <b class="m">${R2s(w.q)}</b>`:`<span class="pill bad">не закрыть</span> выбранными юнитами`}</td></tr>`}}
  out.innerHTML=rows||'<tr><td colspan="6" class="note">Нет раундов в указанном промежутке.</td></tr>';
- $("sum").innerHTML=`Закрыто <b>${okN}</b> из ${total} раундов при отправке в ${hm(S)}`;
+ $("sum").innerHTML=`Закрыто <b>${okN}</b> из ${total} раундов при отправке в ${hm(S)}`+(have?` · войск хватает на ${N} раундов по ${per}`:"");$("more").hidden=!!have;
  window._S=S;window._txt=txt.join("\n");tick()}
 function R2s(p){return p.aL<=p.aH?hms(p.aL)+"–"+hms(p.aH):hms(p.a)}
 function gd(k){try{return localStorage.getItem(k)==="1"}catch(e){return false}}
@@ -127,6 +130,7 @@ function tick(){const n=Date.now();$("now").textContent=hms(n);$("cd").textConte
 document.addEventListener("input",e=>{if(e.target.dataset.done){try{e.target.checked?localStorage.setItem(e.target.dataset.done,"1"):localStorage.removeItem(e.target.dataset.done)}catch(_){}e.target.closest("tr").classList.toggle("done",e.target.checked);return}if(e.target.closest(".card"))calc()});
 $("allbtn").onclick=()=>{const b=$("allbtn");navigator.clipboard?.writeText(window._txt).then(()=>{b.textContent="Скопировано";setTimeout(()=>b.textContent="Скопировать всё для игрового чата",1500)}).catch(()=>{$("alltxt").hidden=false;$("alltxt").value=window._txt;$("alltxt").select()})};
 $("nowbtn").onclick=()=>{setSendSoon();calc()};
+window._N=50;$("more").onclick=()=>{window._N+=50;calc()};
 document.addEventListener("click",e=>{const b=e.target.closest("[data-c]");if(!b)return;const t=b.dataset.c;
  navigator.clipboard?.writeText(t).then(()=>{b.textContent="скопировано";setTimeout(calc,900)}).catch(()=>{const r=document.createRange();r.selectNodeContents(b);const s=getSelection();s.removeAllRanges();s.addRange(r)})});
 setInterval(tick,1000);calc();
