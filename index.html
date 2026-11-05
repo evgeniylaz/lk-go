@@ -55,7 +55,7 @@ tr.done td:first-child{opacity:1;text-decoration:none}
 <p class="note" style="margin-top:8px">Приоритет всегда у самого медленного: к медленным можно цеплять быстрых, наоборот нельзя.</p></section>
 
 <section class="card"><h2>Бой и отправка</h2><div class="grid">
-<label>Первый раунд<input id="r1" type="time"></label>
+<label>Первый раунд<input id="r1" type="datetime-local"></label>
 <label>Юнитов на раунд<select id="per"></select></label>
 <label>Войск в наличии (необяз.)<input id="have" type="number" min="0" placeholder="если пусто — 50 раундов"></label>
 <label>Возврат: с минуты<input id="wa" type="number" min="0" value="2"></label>
@@ -82,7 +82,7 @@ const cube=(x,y)=>{const q=x-((y-(y&1))>>1);return[q,y,-q-y]};
 const dist=(a,b)=>{const A=cube(a[0],a[1]),B=cube(b[0],b[1]);return Math.max(Math.abs(A[0]-B[0]),Math.abs(A[1]-B[1]),Math.abs(A[2]-B[2]))};
 const pad=n=>String(n).padStart(2,"0");
 const hms=ms=>{const d=new Date(ms);return pad(d.getHours())+":"+pad(d.getMinutes())+":"+pad(d.getSeconds())};
-const hm=ms=>{const d=new Date(ms);return pad(d.getHours())+":"+pad(d.getMinutes())};
+const hm=ms=>{const d=new Date(ms),t=new Date();const day=d.toDateString()===t.toDateString()?"":pad(d.getDate())+"."+pad(d.getMonth()+1)+" ";return day+pad(d.getHours())+":"+pad(d.getMinutes())};
 const dur=s=>{s=Math.max(0,Math.round(s));const h=Math.floor(s/3600),m=Math.floor(s%3600/60),c=s%60;return(h?h+"ч ":"")+(h||m?m+"м ":"")+c+"с"};
 const ub=$("units");
 Object.keys(BASE).forEach(u=>{const l=document.createElement("label");l.className="chk";l.innerHTML=`<input type="checkbox" data-u="${u}" ${SPECIAL.has(u)?"":"checked"}> ${u} <small data-s="${u}"></small>`;ub.appendChild(l)});
@@ -101,7 +101,7 @@ function calc(){
  for(const t of MAP){if(col!=="all"&&t[2]!==col)continue;const d=dist(src,t);if(!d)continue;if(!byD.has(d))byD.set(d,t)}
  const D=[...byD.keys()].sort((a,b)=>a-b);
  const now=Date.now();let S=autoS(now);window._S0=S;
- let R1=atToday($("r1").value,S);if(R1<S)R1+=864e5;const per=+ps.value,have=+$("have").value||0,N=have?Math.floor(have/per):window._N;
+ let R1=new Date($("r1").value).getTime();if(!(R1>S)){out.innerHTML='<tr><td colspan="6" class="err">Первый раунд уже прошёл или дата не задана.</td></tr>';return}const per=+ps.value,have=+$("have").value||0,N=have?Math.floor(have/per):window._N;
  const step=600e3,wa=(+$("wa").value)*60e3,wb=(+$("wb").value)*60e3,pct=$("usedly").checked?0.05:0;
  function pick(R,send){const lo=R-step+wa,hi=R-step+wb,aim=(lo+hi+60e3)/2;
   for(const u of units){const v=sp[u]*1000;let best=null;
@@ -113,7 +113,7 @@ function calc(){
  for(let i=0,R=R1;i<N;i++,R+=step){total++;const p=pick(R,S);
   const dk=`done:${src}:${hm(R)}`;const dn=gd(dk);const cb=`<td><input type="checkbox" data-done="${dk}" ${dn?"checked":""} aria-label="Раунд ${hm(R)} закрыт"></td>`;
   if(p){okN++;txt.push(`${hm(R)} ${p.u} l+k://coordinates?${p.t[0]},${p.t[1]}&347 приб. ${R2s(p)}`);rows+=`<tr class="${dn?"done":""}">${cb}<td class="m"><b>${hm(R)}</b></td><td>${p.u}</td><td>${L(p.t)}</td><td class="m">${p.d}</td><td class="m">${R2s(p)}</td></tr>`}
-  else{let w=null;for(let s=S+60000;s<R;s+=60000){const q=pick(R,s);if(q){w={s,q};break}}
+  else{let w=null;for(let s=S+60000;s<Math.min(R,S+6*3600e3);s+=60000){const q=pick(R,s);if(q){w={s,q};break}}
    if(w)txt.push(`${hm(R)} ЖДАТЬ до ${hm(w.s)}: ${w.q.u} l+k://coordinates?${w.q.t[0]},${w.q.t[1]}&347 приб. ${R2s(w.q)}`);
    rows+=`<tr class="none ${dn?"done":""}">${cb}<td class="m"><b>${hm(R)}</b></td><td colspan="4">${w?`<span class="pill warn">ждать</span> отправка в <b class="m">${hm(w.s)}</b> (через <span class="m" data-to="${w.s}"></span>): ${w.q.u} → ${L(w.q.t)}, прибытие <b class="m">${R2s(w.q)}</b>`:`<span class="pill bad">не закрыть</span> выбранными юнитами`}</td></tr>`}}
  out.innerHTML=rows||'<tr><td colspan="6" class="note">Нет раундов в указанном промежутке.</td></tr>';
