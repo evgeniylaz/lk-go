@@ -119,7 +119,7 @@ function calc(){
  out.innerHTML=rows||'<tr><td colspan="6" class="note">Нет раундов в указанном промежутке.</td></tr>';
  $("sum").innerHTML=`Закрыто <b>${okN}</b> из ${total} раундов при отправке в ${hm(S)}`+(have?` · войск хватает на ${N} раундов по ${per}`:"")+(started?' <span class="pill bad">бой уже начался</span>':"");$("more").hidden=!!have;
  window._S=S;window._txt=txt.join("\n");trDom(document.body);tick()}
-function R2s(p){return p.aL<=p.aH?hms(p.aL)+"–"+hms(p.aH):hms(p.a)}
+function R2s(p){const lo=Math.ceil(p.aL/6e4)*6e4,hi=Math.floor(p.aH/6e4)*6e4;return lo<=hi?(lo===hi?hm(lo):hm(lo)+"–"+hm(hi)):hm(p.a)}
 function gd(k){try{return localStorage.getItem(k)==="1"}catch(e){return false}}
 function L(t){const u=`l+k://coordinates?${t[0]},${t[1]}&347`;return `<a class="glink" href="${u}">${t[0]},${t[1]} ↗</a> <button class="link" data-c="${u}">копия</button>`}
 function tick(){const n=Date.now();if(window._S0&&autoS(n)!==window._S0){calc();return}$("now").textContent=hms(n);$("cd").textContent=window._S?(window._S>n?dur((window._S-n)/1000):trS("отправка уже идёт или прошла")):"—";
