@@ -108,7 +108,7 @@ function calc(){
   for(const u of units){const v=sp[u]*1000;let best=null;
    for(const d of D){const T=Math.round(d*v/1000)*1000;const kmax=Math.floor(pct*T/60000);
     const kNeed=Math.ceil((lo-send-2*T)/60000);const k=Math.max(0,kNeed);if(k>kmax)continue;
-    for(let kk=k;kk<=kmax;kk++){const r=send+2*T+kk*60000;if(r<lo)continue;if(r+20000>hi)break;const sc=Math.abs(r-aim);if(!best||sc<best.sc)best={sc,u,d,t:byD.get(d),k:kk,r,a:send+T+kk*60000,aL:Math.max(lo-T,send+T+60000),aH:Math.min(hi-T,send+T+pct*T)}}}
+    for(let kk=k;kk<=kmax;kk++){const r=send+2*T+kk*60000;if(r<lo+25000)continue;if(r>hi)break;const sc=Math.abs(r-aim);if(!best||sc<best.sc)best={sc,u,d,t:byD.get(d),k:kk,r,a:send+T+kk*60000,aL:Math.max(lo-T,send+T+60000),aH:Math.min(hi-T,send+T+pct*T)}}}
    if(best)return best}return null}
  let rows="",okN=0,total=0;const txt=[`Карусель из ${src[0]},${src[1]}, отправка в ${hms(S)}`];
  for(let i=0,R=R1;i<N;i++,R+=step){if(i===0){rows+=`<tr class="garr"><td><input type="checkbox" checked disabled></td><td class="m"><b>${hm(R)}</b></td><td colspan="4" class="gt">гарнизон — нужно ×2 юнитов</td></tr>`;txt.push(`${hm(R)} гарнизон (×2 юнитов)`);continue}total++;const p=pick(R,S);
