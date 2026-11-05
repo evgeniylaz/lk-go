@@ -103,11 +103,11 @@ function calc(){
  const now=Date.now();let S=autoS(now);window._S0=S;
  let R1=new Date($("r1").value).getTime();if(isNaN(R1)){out.innerHTML='<tr><td colspan="6" class="err">Первый раунд уже прошёл или дата не задана.</td></tr>';trDom(document.body);return}const started=R1<=now;const per=+ps.value,have=+$("have").value||0,N=have?Math.floor(have/per):window._N;
  const step=600e3,wa=(+$("wa").value)*60e3,wb=(+$("wb").value)*60e3,pct=$("usedly").checked?0.05:0;
- function pick(R,send){const lo=R-step+wa,hi=R-step+wb,aim=(lo+hi+60e3)/2;
+ function pick(R,send){const lo=R-step+wa,hi=R-step+wb,aim=(lo+hi)/2;
   for(const u of units){const v=sp[u]*1000;let best=null;
    for(const d of D){const T=Math.round(d*v/1000)*1000;const kmax=Math.floor(pct*T/60000);
     const kNeed=Math.ceil((lo-send-2*T)/60000);const k=Math.max(0,kNeed);if(k>kmax)continue;
-    for(let kk=k;kk<=kmax;kk++){const r=send+2*T+kk*60000;if(r+60000>hi)break;const sc=Math.abs(r+30000-aim);if(!best||sc<best.sc)best={sc,u,d,t:byD.get(d),k:kk,r,a:send+T+kk*60000,aL:Math.max(lo-T,send+T+60000),aH:Math.min(hi-T,send+T+pct*T)}}}
+    for(let kk=k;kk<=kmax;kk++){const r=send+2*T+kk*60000;if(r<lo)continue;if(r+20000>hi)break;const sc=Math.abs(r-aim);if(!best||sc<best.sc)best={sc,u,d,t:byD.get(d),k:kk,r,a:send+T+kk*60000,aL:Math.max(lo-T,send+T+60000),aH:Math.min(hi-T,send+T+pct*T)}}}
    if(best)return best}return null}
  let rows="",okN=0,total=0;const txt=[`Карусель из ${src[0]},${src[1]}, отправка в ${hms(S)}`];
  for(let i=0,R=R1;i<N;i++,R+=step){total++;const p=pick(R,S);
