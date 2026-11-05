@@ -61,7 +61,8 @@ tr.done td:first-child{opacity:1;text-decoration:none}
 <label>Возврат: с минуты<input id="wa" type="number" min="0" value="2"></label>
 <label>…по минуту<input id="wb" type="number" min="1" value="7"></label>
 <label>Отправка в<input id="send" type="time"></label>
-<label>Макс. задержка, %<input id="dly" type="number" min="0" step="0.5" value="5"></label>
+<label class="chk"><input id="usedly" type="checkbox"> Задерживать отправление</label>
+<label id="ldly">Макс. задержка, %<input id="dly" type="number" min="0" step="0.5" value="5"></label>
 <label>Цели<select id="col"><option value="all">Все занятые</option><option value="P">Только свои (Jek)</option><option value="R">Только враги</option><option value="K">Только нейтралы</option></select></label>
 </div>
 <p class="note" style="margin-top:8px">Возврат «с минуты 2 по 7» — это 2–7-я минута интервала перед раундом: для раунда 19:50 юниты приходят между 19:42 и 19:47. Отправлять нужно в течение указанной минуты. «Прибытие к цели» — любое время из этого окна даст возврат в вилку, если отправишь в указанную минуту.</p></section>
@@ -102,7 +103,7 @@ function calc(){
  const D=[...byD.keys()].sort((a,b)=>a-b);
  const now=Date.now();let S=atToday($("send").value,now);if(S<now-3600e3)S+=864e5;
  let R1=atToday($("r1").value,S);if(R1<S)R1+=864e5;let R2=atToday($("r2").value,R1);if(R2<R1)R2+=864e5;
- const step=(+$("step").value||10)*60e3,wa=(+$("wa").value)*60e3,wb=(+$("wb").value)*60e3,pct=(+$("dly").value||0)/100;
+ const step=(+$("step").value||10)*60e3,wa=(+$("wa").value)*60e3,wb=(+$("wb").value)*60e3,pct=$("usedly").checked?(+$("dly").value||0)/100:0;$("ldly").hidden=!$("usedly").checked;
  function pick(R,send){const lo=R-step+wa,hi=R-step+wb,aim=(lo+hi+60e3)/2;
   for(const u of units){const v=sp[u]*1000;let best=null;
    for(const d of D){const T=d*v;const kmax=Math.floor(pct*T/60000);
