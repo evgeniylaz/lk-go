@@ -44,6 +44,7 @@ h1{font:700 2rem/1.1 var(--disp);letter-spacing:.01em;margin:18px 0 4px;text-wra
 .u{color:var(--mut);font-size:.85rem;overflow-wrap:anywhere}
 details summary{cursor:pointer;font-weight:500}
 .sync{margin:6px 0 0;padding:0;list-style:none;display:flex;flex-direction:column;gap:6px}
+.sc{width:18px;height:18px;margin:0 4px 0 0;flex:none}.sent{opacity:.5}
 .sync li{border-left:2px solid var(--line);padding-left:8px}
 .cd{font:500 .8rem var(--mono);color:var(--acc)}
 .tgs{background:var(--card);border:1px solid var(--line);border-radius:8px;padding:10px 14px;margin:0 0 10px}.tgs summary{font:700 1.15rem var(--disp);cursor:pointer}
@@ -73,6 +74,8 @@ const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",
 const link=c=>`l+k://coordinates?${c}&347`;
 const cp=c=>`<a class="go" href="${link(c)}">${c} ↗</a> <button class="cp" data-c="${link(c)}">⧉</button>`;
 const sv=n=>n?` · серебро ${n.toLocaleString("ru-RU")}`:"";
+let OPEN=new Set();try{OPEN=new Set(JSON.parse(localStorage.getItem("open")||"[]"))}catch(e){}
+const saveOpen=()=>{try{localStorage.setItem("open",JSON.stringify([...OPEN]))}catch(e){}};
 const key=o=>`done:${o.acc}:${o.t}:${o.ts}`;
 function bar(){const b=document.getElementById("bar");
  b.innerHTML=ACC.map(a=>`<button class="chip" data-acc="${esc(a)}" aria-pressed="${a===fAcc}">${esc(a)}</button>`).join("")+
@@ -81,10 +84,10 @@ function bar(){const b=document.getElementById("bar");
 function card(o,isNext){const dn=gd(key(o));
  const tags=o.fake?[`<span class="tag k-Фейк">Фейк</span>`]:o.kinds.map(k=>`<span class="tag k-${k.replace(" ","")} ${k==="Атака GG"?"k-GG":""}">${k}</span>`);
  const f=o.f;
- const first=`<div class="step"><div class="row"><span class="lbl">1 · Первая</span><span class="tag k-${f.k==="Якорь"?"GG":f.k.split(" ")[0]}">${f.k==="Якорь"?"якорь, 1 мечник":f.k}</span></div>
+ const first=`<div class="step ${gd(key(o)+":f")?"sent":""}"><div class="row"><input type="checkbox" class="sc" data-s="${key(o)}:f" ${gd(key(o)+":f")?"checked":""} aria-label="отправлена"><span class="lbl">1 · Первая</span><span class="tag k-${f.k==="Якорь"?"GG":f.k.split(" ")[0]}">${f.k==="Якорь"?"якорь, 1 мечник":f.k}</span></div>
   <div class="row">из ${cp(f.s)}${f.n?` <span>${esc(f.n)}</span>`:""}<span class="mono">${f.fl} полей</span></div><div class="u">${esc(f.u)}${sv(f.sv)}</div></div>`;
- const rest=o.r.length?`<div class="step"><details><summary>2 · Сразу синхронизировать: ${o.r.length} ${o.r.length%10==1&&o.r.length%100!=11?"отправка":(o.r.length%10>=2&&o.r.length%10<=4&&(o.r.length%100<10||o.r.length%100>=20)?"отправки":"отправок")}</summary>
-  <ul class="sync">${o.r.map(x=>`<li><div class="row">${x.k!=="Атака"&&!o.fake?`<span class="tag k-${x.k.split(" ")[0]}">${x.k}</span>`:""}из ${cp(x.s)}${x.n?` <span>${esc(x.n)}</span>`:""}<span class="mono">${x.fl} п.</span></div><div class="u">${esc(x.u)}${sv(x.sv)}</div></li>`).join("")}</ul></details></div>`:"";
+ const rest=o.r.length?`<div class="step"><details data-o="${key(o)}" ${OPEN.has(key(o))?"open":""}><summary>2 · Сразу синхронизировать: ${o.r.length} ${o.r.length%10==1&&o.r.length%100!=11?"отправка":(o.r.length%10>=2&&o.r.length%10<=4&&(o.r.length%100<10||o.r.length%100>=20)?"отправки":"отправок")}</summary>
+  <ul class="sync">${o.r.map((x,i)=>`<li class="${gd(key(o)+":"+i)?"sent":""}"><div class="row"><input type="checkbox" class="sc" data-s="${key(o)}:${i}" ${gd(key(o)+":"+i)?"checked":""} aria-label="отправлена">${x.k!=="Атака"&&!o.fake?`<span class="tag k-${x.k.split(" ")[0]}">${x.k}</span>`:""}из ${cp(x.s)}${x.n?` <span>${esc(x.n)}</span>`:""}<span class="mono">${x.fl} п.</span></div><div class="u">${esc(x.u)}${sv(x.sv)}</div></li>`).join("")}</ul></details></div>`:"";
  return `<article class="card ${dn?"done":""} ${isNext?"next":""}"><div class="when"><span class="s">с ${o.w0t}${o.w0d!==o.d?" "+o.w0d:""}</span><span class="t">${o.tm.slice(0,5)}</span><span class="s">до ${o.tm} · ${o.d}</span>${isNext?`<span class="cd" data-w0="${o.w0}" data-ts="${o.ts}"></span>`:""}<label><input type="checkbox" data-k="${key(o)}" ${dn?"checked":""}> готово</label></div>
  <div class="main"><div class="head"><span class="acc">${esc(o.acc)}</span>${tags.join("")}</div>
  <div class="row"><span class="tgt">${esc(o.tn)}</span>${cp(o.t)}</div>
@@ -102,8 +105,10 @@ document.addEventListener("click",e=>{const a=e.target.closest("[data-acc]"),t=e
  else if(e.target.id==="hd"){hideDone=!hideDone;try{localStorage.setItem("hideDone",hideDone?"1":"0")}catch(_){}render()}
  else if(c){const v=c.dataset.c,old=c.textContent;const ok=()=>{c.textContent="скопировано";setTimeout(()=>c.textContent=old,900)};
   if(navigator.clipboard)navigator.clipboard.writeText(v).then(ok).catch(()=>{const r=document.createRange();r.selectNodeContents(c);getSelection().removeAllRanges();getSelection().addRange(r)});}});
-document.addEventListener("change",e=>{const k=e.target.dataset.k;if(k){sd(k,e.target.checked);render()}});
+document.addEventListener("change",e=>{const k=e.target.dataset.k,s=e.target.dataset.s;if(k){sd(k,e.target.checked);render()}else if(s){sd(s,e.target.checked);const li=e.target.closest("li,.step");if(li)li.classList.toggle("sent",e.target.checked)}});
+document.addEventListener("toggle",e=>{const d=e.target;if(d.dataset&&d.dataset.o){d.open?OPEN.add(d.dataset.o):OPEN.delete(d.dataset.o);saveOpen()}else if(d.id==="tgs"){try{localStorage.setItem("tgsOpen",d.open?"1":"0")}catch(_){}}},true);
+try{if(localStorage.getItem("tgsOpen")==="1")document.getElementById("tgs").open=true}catch(e){}
 document.getElementById("tglist").innerHTML=TG.map(g=>`<div class="tg"><div class="row"><span class="tag ${g.typ==="Город"?"k-Атака":"k-GG"}">${g.typ}</span><span class="tgt">${esc(g.n)}</span>${cp(g.t)}</div><div class="row u">${esc(g.acc)}${g.sv?" · серебро: "+esc(g.sv):""} · <b>всего ${nf(g.tot)}</b></div><div class="nums">${g.u.map(([n,v])=>n+" "+nf(v)).join(" · ")}</div><div class="nums">осадных ${nf(g.sg)} · ближний ${nf(g.mel)} · дальний ${nf(g.rng)} · кавалерия ${nf(g.cav)}</div></div>`).join("");
-render();setInterval(tick,1000);setInterval(render,60000);
+render();setInterval(tick,1000);
 </script>
 </html>
