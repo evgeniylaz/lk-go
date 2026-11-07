@@ -58,6 +58,7 @@ details summary{cursor:pointer;font-weight:500}
 <h1>Порядок отправок BW6</h1>
 <p class="sub">Реал приходит 07.11 в 18:00, фейки в 19:00 (МСК). Каждая карточка — одна группа «аккаунт → цель»: отправь первую в своём окне, поставив задержку до времени «до» (целые минуты, вниз), затем сразу все из списка «синхронизировать» на ту же цель через «синхронизировать атаку». Нажми на координаты — откроется игра; ⧉ копирует ссылку.</p>
 <details class="tgs" id="tgs"><summary>Состав по целям (реал, 18:00)</summary><div id="tglist"></div></details>
+<details class="tgs" id="svs"><summary>Серовозки — кто к кому ближе</summary><div id="svlist"></div></details>
 <div class="bar" id="bar"></div>
 <div id="out"></div>
 </div>
@@ -109,6 +110,250 @@ document.addEventListener("change",e=>{const k=e.target.dataset.k,s=e.target.dat
 document.addEventListener("toggle",e=>{const d=e.target;if(d.dataset&&d.dataset.o){d.open?OPEN.add(d.dataset.o):OPEN.delete(d.dataset.o);saveOpen()}else if(d.id==="tgs"){try{localStorage.setItem("tgsOpen",d.open?"1":"0")}catch(_){}}},true);
 try{if(localStorage.getItem("tgsOpen")==="1")document.getElementById("tgs").open=true}catch(e){}
 document.getElementById("tglist").innerHTML=TG.map(g=>`<div class="tg"><div class="row"><span class="tag ${g.typ==="Город"?"k-Атака":"k-GG"}">${g.typ}</span><span class="tgt">${esc(g.n)}</span>${cp(g.t)}</div><div class="row u">${esc(g.acc)}${g.sv?" · серебро: "+esc(g.sv):""} · <b>всего ${nf(g.tot)}</b></div><div class="nums">${g.u.map(([n,v])=>n+" "+nf(v)).join(" · ")}</div><div class="nums">осадных ${nf(g.sg)} · ближний ${nf(g.mel)} · дальний ${nf(g.rng)} · кавалерия ${nf(g.cav)}</div></div>`).join("");
+{const SV=[
+{
+"n": "NeitherNeither",
+"st": "готов",
+"x": 16301,
+"y": 16453,
+"acc": "Castler",
+"cn": "City-104",
+"cx": 16300,
+"cy": 16454,
+"d": 2
+},
+{
+"n": "Залипунчик",
+"st": "готов",
+"x": 16304,
+"y": 16455,
+"acc": "Castler",
+"cn": "City-104",
+"cx": 16300,
+"cy": 16454,
+"d": 5
+},
+{
+"n": "Forbidden West",
+"st": "готов",
+"x": 16309,
+"y": 16443,
+"acc": "Castler",
+"cn": "City-101",
+"cx": 16304,
+"cy": 16443,
+"d": 5
+},
+{
+"n": "Sipatiy",
+"st": "готов",
+"x": 16291,
+"y": 16440,
+"acc": "Castler",
+"cn": "City-102",
+"cx": 16295,
+"cy": 16434,
+"d": 7
+},
+{
+"n": "Bonapart",
+"st": "готов",
+"x": 16340,
+"y": 16433,
+"acc": "Jek",
+"cn": "C005",
+"cx": 16355,
+"cy": 16420,
+"d": 21
+},
+{
+"n": "Ponos",
+"st": "готов",
+"x": 16376,
+"y": 16503,
+"acc": "Johan",
+"cn": "⚜️ James Bond ⚜️",
+"cx": 16366,
+"cy": 16484,
+"d": 20
+},
+{
+"n": "Losos*",
+"st": "со звёздочкой: захват Boxer 07.11 10:45",
+"x": 16435,
+"y": 16466,
+"acc": "Johan",
+"cn": "⚜️Jan Hendrik⚜️",
+"cx": 16421,
+"cy": 16480,
+"d": 21
+},
+{
+"n": "Китаец",
+"st": "готов",
+"x": 16369,
+"y": 16396,
+"acc": "Johan",
+"cn": "⚜️Jan Kamp ⚜️",
+"cx": 16385,
+"cy": 16408,
+"d": 22
+},
+{
+"n": "Grunwald",
+"st": "готов",
+"x": 16383,
+"y": 16506,
+"acc": "Johan",
+"cn": "⚜️ James Bond ⚜️",
+"cx": 16366,
+"cy": 16484,
+"d": 28
+},
+{
+"n": "Красивый",
+"st": "?",
+"x": 16447,
+"y": 16460,
+"acc": "Johan",
+"cn": "⚜️Jan Hendrik⚜️",
+"cx": 16421,
+"cy": 16480,
+"d": 36
+},
+{
+"n": "Tunak",
+"st": "готов",
+"x": 16469,
+"y": 16443,
+"acc": "Johan",
+"cn": "⚜️Jan Hendrik⚜️",
+"cx": 16421,
+"cy": 16480,
+"d": 67
+},
+{
+"n": "Bundes",
+"st": "готов",
+"x": 16471,
+"y": 16416,
+"acc": "Johan",
+"cn": "⚜️Jan Hendrik⚜️",
+"cx": 16421,
+"cy": 16480,
+"d": 82
+},
+{
+"n": "Konung",
+"st": "готов",
+"x": 16477,
+"y": 16399,
+"acc": "Johan",
+"cn": "⚜️Jan Hendrik⚜️",
+"cx": 16421,
+"cy": 16480,
+"d": 97
+},
+{
+"n": "Quicksilver",
+"st": "готов",
+"x": 16477,
+"y": 16388,
+"acc": "Johan",
+"cn": "⚜️Jan Hendrik⚜️",
+"cx": 16421,
+"cy": 16480,
+"d": 102
+},
+{
+"n": "KonchitaW",
+"st": "готов",
+"x": 16477,
+"y": 16383,
+"acc": "Johan",
+"cn": "⚜️Jan Hendrik⚜️",
+"cx": 16421,
+"cy": 16480,
+"d": 105
+},
+{
+"n": "Batman",
+"st": "готов",
+"x": 16477,
+"y": 16380,
+"acc": "Johan",
+"cn": "⚜️Jan Hendrik⚜️",
+"cx": 16421,
+"cy": 16480,
+"d": 106
+},
+{
+"n": "МалышкаВспышка",
+"st": "нужно 240 золота + убрать лишний замок",
+"x": 16476,
+"y": 16379,
+"acc": "Johan",
+"cn": "⚜️Jan Hendrik⚜️",
+"cx": 16421,
+"cy": 16480,
+"d": 106
+},
+{
+"n": "Coconut*",
+"st": "со звёздочкой: захват ERM 07.11 02:21",
+"x": 16475,
+"y": 16377,
+"acc": "Johan",
+"cn": "⚜️Jan Hendrik⚜️",
+"cx": 16421,
+"cy": 16480,
+"d": 106
+},
+{
+"n": "AlexL",
+"st": "готов",
+"x": 16311,
+"y": 16459,
+"acc": "Podosinovik",
+"cn": "Иггдрассиль",
+"cx": 16311,
+"cy": 16463,
+"d": 4
+},
+{
+"n": "Harry P",
+"st": "не готов: 130 золота + 2500 серы",
+"x": 16349,
+"y": 16485,
+"acc": "КА",
+"cn": "Ленинград-2",
+"cx": 16352,
+"cy": 16480,
+"d": 5
+},
+{
+"n": "Paris",
+"st": "нужно 70 золота",
+"x": 16352,
+"y": 16487,
+"acc": "КА",
+"cn": "Ленинград-2",
+"cx": 16352,
+"cy": 16480,
+"d": 7
+},
+{
+"n": "KD.SupapleX188",
+"st": "нужно 300 золота",
+"x": 16304,
+"y": 16307,
+"acc": "Сармат",
+"cn": "A  Şehir 001",
+"cx": 16374,
+"cy": 16283,
+"d": 82
+}
+];let h="",a="";for(const r of SV){if(r.acc!==a){a=r.acc;h+=`<div class="tg"><div class="row"><span class="tag k-GG">${esc(a)}</span></div></div>`}h+=`<div class="tg"><div class="row"><span class="tgt">${esc(r.n)}</span>${cp(r.x+","+r.y)}<span class="mono">${r.d} полей</span></div><div class="row u">до города ${esc(r.cn)} ${cp(r.cx+","+r.cy)}</div><div class="nums">${esc(r.st)}</div></div>`}document.getElementById("svlist").innerHTML=h;}
 render();setInterval(tick,1000);
 </script>
 </html>
