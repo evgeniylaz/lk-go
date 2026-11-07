@@ -50,6 +50,7 @@ details summary{cursor:pointer;font-weight:500}
 .tgs{background:var(--card);border:1px solid var(--line);border-radius:8px;padding:10px 14px;margin:0 0 10px}.tgs summary{font:700 1.15rem var(--disp);cursor:pointer}
 .tg{border-top:1px solid var(--line);padding:8px 0;display:flex;flex-direction:column;gap:3px}.tg:first-child{border-top:0}
 .tg .nums{font:500 .85rem var(--mono);color:var(--mut);overflow-wrap:anywhere}
+.svc{display:inline-flex;align-items:center;gap:4px;font-size:.85rem;margin-left:8px}.svc input{width:18px;height:18px}
 .empty{color:var(--mut);padding:20px 0}
 @media (max-width:480px){.card{grid-template-columns:1fr}.when{border-right:0;border-bottom:1px solid var(--line);flex-direction:row;align-items:baseline;gap:10px}.when label{margin:0 0 0 auto}}
 @media (prefers-reduced-motion:reduce){*{transition:none!important}}
@@ -124,7 +125,13 @@ document.getElementById("tglist").innerHTML=TG.map(g=>`<div class="tg"><div clas
 "rd": "Заблокирован",
 "sv": "—",
 "gd": "—",
-"df": "—"
+"df": "—",
+"def": {
+"s": false,
+"g": false,
+"d": false,
+"b": true
+}
 },
 {
 "n": "Залипунчик",
@@ -139,7 +146,13 @@ document.getElementById("tglist").innerHTML=TG.map(g=>`<div class="tg"><div clas
 "rd": "Полностью готов",
 "sv": "✓",
 "gd": "✓",
-"df": "✓"
+"df": "✓",
+"def": {
+"s": true,
+"g": true,
+"d": true,
+"b": false
+}
 },
 {
 "n": "Forbidden West",
@@ -154,7 +167,13 @@ document.getElementById("tglist").innerHTML=TG.map(g=>`<div class="tg"><div clas
 "rd": "Заблокирован",
 "sv": "—",
 "gd": "—",
-"df": "—"
+"df": "—",
+"def": {
+"s": false,
+"g": false,
+"d": false,
+"b": true
+}
 },
 {
 "n": "Sipatiy",
@@ -169,7 +188,13 @@ document.getElementById("tglist").innerHTML=TG.map(g=>`<div class="tg"><div clas
 "rd": "Без защиты",
 "sv": "✓",
 "gd": "✓",
-"df": "✗"
+"df": "✗",
+"def": {
+"s": true,
+"g": true,
+"d": true,
+"b": false
+}
 },
 {
 "n": "Bonapart",
@@ -184,7 +209,13 @@ document.getElementById("tglist").innerHTML=TG.map(g=>`<div class="tg"><div clas
 "rd": "Без защиты",
 "sv": "✓",
 "gd": "✓",
-"df": "✗"
+"df": "✗",
+"def": {
+"s": true,
+"g": true,
+"d": false,
+"b": false
+}
 },
 {
 "n": "Ponos",
@@ -199,7 +230,13 @@ document.getElementById("tglist").innerHTML=TG.map(g=>`<div class="tg"><div clas
 "rd": "Без защиты",
 "sv": "✓",
 "gd": "✓",
-"df": "✗"
+"df": "✗",
+"def": {
+"s": true,
+"g": true,
+"d": false,
+"b": false
+}
 },
 {
 "n": "Losos*",
@@ -214,7 +251,13 @@ document.getElementById("tglist").innerHTML=TG.map(g=>`<div class="tg"><div clas
 "rd": "Без защиты",
 "sv": "✓",
 "gd": "✓",
-"df": "✗"
+"df": "✗",
+"def": {
+"s": true,
+"g": true,
+"d": false,
+"b": false
+}
 },
 {
 "n": "Китаец",
@@ -229,7 +272,13 @@ document.getElementById("tglist").innerHTML=TG.map(g=>`<div class="tg"><div clas
 "rd": "Без защиты",
 "sv": "✓",
 "gd": "✓",
-"df": "✗"
+"df": "✗",
+"def": {
+"s": true,
+"g": true,
+"d": false,
+"b": false
+}
 },
 {
 "n": "Grunwald",
@@ -244,7 +293,13 @@ document.getElementById("tglist").innerHTML=TG.map(g=>`<div class="tg"><div clas
 "rd": "Без защиты",
 "sv": "✓",
 "gd": "✓",
-"df": "✗"
+"df": "✗",
+"def": {
+"s": true,
+"g": true,
+"d": false,
+"b": false
+}
 },
 {
 "n": "Красивый",
@@ -259,7 +314,13 @@ document.getElementById("tglist").innerHTML=TG.map(g=>`<div class="tg"><div clas
 "rd": "Нужно золото",
 "sv": "✓",
 "gd": "✗",
-"df": "✗"
+"df": "✗",
+"def": {
+"s": true,
+"g": false,
+"d": false,
+"b": false
+}
 },
 {
 "n": "Tunak",
@@ -274,7 +335,13 @@ document.getElementById("tglist").innerHTML=TG.map(g=>`<div class="tg"><div clas
 "rd": "Без защиты",
 "sv": "✓",
 "gd": "✓",
-"df": "✗"
+"df": "✗",
+"def": {
+"s": true,
+"g": true,
+"d": false,
+"b": false
+}
 },
 {
 "n": "Bundes",
@@ -289,7 +356,13 @@ document.getElementById("tglist").innerHTML=TG.map(g=>`<div class="tg"><div clas
 "rd": "Без защиты",
 "sv": "✓",
 "gd": "✓",
-"df": "✗"
+"df": "✗",
+"def": {
+"s": true,
+"g": true,
+"d": false,
+"b": false
+}
 },
 {
 "n": "Konung",
@@ -304,7 +377,13 @@ document.getElementById("tglist").innerHTML=TG.map(g=>`<div class="tg"><div clas
 "rd": "Без защиты",
 "sv": "✓",
 "gd": "✓",
-"df": "✗"
+"df": "✗",
+"def": {
+"s": true,
+"g": true,
+"d": false,
+"b": false
+}
 },
 {
 "n": "Quicksilver",
@@ -319,7 +398,13 @@ document.getElementById("tglist").innerHTML=TG.map(g=>`<div class="tg"><div clas
 "rd": "Без защиты",
 "sv": "✓",
 "gd": "✓",
-"df": "✗"
+"df": "✗",
+"def": {
+"s": true,
+"g": true,
+"d": false,
+"b": false
+}
 },
 {
 "n": "KonchitaW",
@@ -334,7 +419,13 @@ document.getElementById("tglist").innerHTML=TG.map(g=>`<div class="tg"><div clas
 "rd": "Без защиты",
 "sv": "✓",
 "gd": "✓",
-"df": "✗"
+"df": "✗",
+"def": {
+"s": true,
+"g": true,
+"d": false,
+"b": false
+}
 },
 {
 "n": "Batman",
@@ -349,7 +440,13 @@ document.getElementById("tglist").innerHTML=TG.map(g=>`<div class="tg"><div clas
 "rd": "Без защиты",
 "sv": "✓",
 "gd": "✓",
-"df": "✗"
+"df": "✗",
+"def": {
+"s": true,
+"g": true,
+"d": false,
+"b": false
+}
 },
 {
 "n": "МалышкаВспышка",
@@ -364,7 +461,13 @@ document.getElementById("tglist").innerHTML=TG.map(g=>`<div class="tg"><div clas
 "rd": "Нужно золото",
 "sv": "✓",
 "gd": "✗",
-"df": "✗"
+"df": "✗",
+"def": {
+"s": true,
+"g": false,
+"d": false,
+"b": false
+}
 },
 {
 "n": "Coconut*",
@@ -379,7 +482,13 @@ document.getElementById("tglist").innerHTML=TG.map(g=>`<div class="tg"><div clas
 "rd": "Без защиты",
 "sv": "✓",
 "gd": "✓",
-"df": "✗"
+"df": "✗",
+"def": {
+"s": true,
+"g": true,
+"d": false,
+"b": false
+}
 },
 {
 "n": "AlexL",
@@ -394,7 +503,13 @@ document.getElementById("tglist").innerHTML=TG.map(g=>`<div class="tg"><div clas
 "rd": "Без защиты",
 "sv": "✓",
 "gd": "✓",
-"df": "✗"
+"df": "✗",
+"def": {
+"s": true,
+"g": true,
+"d": false,
+"b": false
+}
 },
 {
 "n": "Harry P",
@@ -409,7 +524,13 @@ document.getElementById("tglist").innerHTML=TG.map(g=>`<div class="tg"><div clas
 "rd": "Не готов",
 "sv": "✗",
 "gd": "✗",
-"df": "✗"
+"df": "✗",
+"def": {
+"s": false,
+"g": false,
+"d": false,
+"b": false
+}
 },
 {
 "n": "Paris",
@@ -424,7 +545,13 @@ document.getElementById("tglist").innerHTML=TG.map(g=>`<div class="tg"><div clas
 "rd": "Нужно золото",
 "sv": "✓",
 "gd": "✗",
-"df": "✗"
+"df": "✗",
+"def": {
+"s": true,
+"g": false,
+"d": false,
+"b": false
+}
 },
 {
 "n": "KD.SupapleX188",
@@ -439,9 +566,21 @@ document.getElementById("tglist").innerHTML=TG.map(g=>`<div class="tg"><div clas
 "rd": "Нужно золото",
 "sv": "✓",
 "gd": "✗",
-"df": "✗"
+"df": "✗",
+"def": {
+"s": true,
+"g": false,
+"d": false,
+"b": false
 }
-];let h="",a="";for(const r of SV){if(r.acc!==a){a=r.acc;h+=`<div class="tg"><div class="row"><span class="tag k-GG">${esc(a)}</span></div></div>`}h+=`<div class="tg"><div class="row"><span class="tgt">${esc(r.n)}</span>${cp(r.x+","+r.y)}<span class="mono">${r.d} полей</span></div><div class="row u">до города ${esc(r.cn)} ${cp(r.cx+","+r.cy)}</div><div class="nums"><b>${esc(r.rd)}</b> · серебро ${r.sv} · золото ${r.gd} · защита ${r.df} · ${esc(r.st)}</div></div>`}document.getElementById("svlist").innerHTML=h;}
+}
+];const sk=(r,f)=>"svk:"+r.n+":"+f;const sg=(r,f)=>{try{const v=localStorage.getItem(sk(r,f));if(v!==null)return v==="1"}catch(e){}return !!r.def[f]};
+const rd=r=>sg(r,"b")?"Заблокирован":(sg(r,"s")&&sg(r,"g")&&sg(r,"d"))?"Полностью готов":(sg(r,"s")&&sg(r,"g"))?"Без защиты":sg(r,"s")?"Нужно золото":"Не готов";
+const draw=()=>{let h="",a="";const cnt={};for(const r of SV){const s=rd(r);cnt[s]=(cnt[s]||0)+1;if(r.acc!==a){a=r.acc;h+=`<div class="tg"><div class="row"><span class="tag k-GG">${esc(a)}</span></div></div>`}
+const cb=(f,l)=>`<label class="svc"><input type="checkbox" data-sv="${esc(r.n)}" data-f="${f}" ${sg(r,f)?"checked":""}> ${l}</label>`;
+h+=`<div class="tg"><div class="row"><span class="tgt">${esc(r.n)}</span>${cp(r.x+","+r.y)}<span class="mono">${r.d} полей</span></div><div class="row u">до города ${esc(r.cn)} ${cp(r.cx+","+r.cy)}</div><div class="row"><b>${s}</b>${cb("s","серебро")}${cb("g","золото")}${cb("d","защита")}${cb("b","заблокирован")}</div><div class="nums">${esc(r.st)}</div></div>`}
+document.getElementById("svlist").innerHTML=`<div class="nums" style="padding:6px 0">${["Полностью готов","Без защиты","Нужно золото","Не готов","Заблокирован"].filter(k=>cnt[k]).map(k=>k+" — "+cnt[k]).join(" · ")}</div>`+h};
+draw();document.getElementById("svlist").addEventListener("change",e=>{const c=e.target;if(!c.dataset.sv)return;const r=SV.find(x=>x.n===c.dataset.sv);try{localStorage.setItem(sk(r,c.dataset.f),c.checked?"1":"0")}catch(_){}draw()});}
 render();setInterval(tick,1000);
 </script>
 </html>
