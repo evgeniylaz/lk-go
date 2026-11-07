@@ -50,6 +50,8 @@ details summary{cursor:pointer;font-weight:500}
 .tgs{background:var(--card);border:1px solid var(--line);border-radius:8px;padding:10px 14px;margin:0 0 10px}.tgs summary{font:700 1.15rem var(--disp);cursor:pointer}
 .tg{border-top:1px solid var(--line);padding:8px 0;display:flex;flex-direction:column;gap:3px}.tg:first-child{border-top:0}
 .tg .nums{font:500 .85rem var(--mono);color:var(--mut);overflow-wrap:anywhere}
+.rdy{font:600 .8rem var(--body);padding:3px 9px;border-radius:5px;color:#fff}
+.rdy-full{background:#2e8b57}.rdy-nodef{background:#a8d5a2;color:#1c3a1c}.rdy-gold{background:#f2c94c;color:#3a2e00}.rdy-no{background:#9aa1a8}.rdy-blk{background:#c0392b}
 .svc{display:inline-flex;align-items:center;gap:4px;font-size:.85rem;margin-left:8px}.svc input{width:18px;height:18px}
 .empty{color:var(--mut);padding:20px 0}
 @media (max-width:480px){.card{grid-template-columns:1fr}.when{border-right:0;border-bottom:1px solid var(--line);flex-direction:row;align-items:baseline;gap:10px}.when label{margin:0 0 0 auto}}
@@ -578,7 +580,7 @@ document.getElementById("tglist").innerHTML=TG.map(g=>`<div class="tg"><div clas
 const rd=r=>sg(r,"b")?"Заблокирован":(sg(r,"s")&&sg(r,"g")&&sg(r,"d"))?"Полностью готов":(sg(r,"s")&&sg(r,"g"))?"Без защиты":sg(r,"s")?"Нужно золото":"Не готов";
 const draw=()=>{let h="",a="";const cnt={};for(const r of SV){const s=rd(r);cnt[s]=(cnt[s]||0)+1;if(r.acc!==a){a=r.acc;h+=`<div class="tg"><div class="row"><span class="tag k-GG">${esc(a)}</span></div></div>`}
 const cb=(f,l)=>`<label class="svc"><input type="checkbox" data-sv="${esc(r.n)}" data-f="${f}" ${sg(r,f)?"checked":""}> ${l}</label>`;
-h+=`<div class="tg"><div class="row"><span class="tgt">${esc(r.n)}</span>${cp(r.x+","+r.y)}<span class="mono">${r.d} полей</span></div><div class="row u">до города ${esc(r.cn)} ${cp(r.cx+","+r.cy)}</div><div class="row"><b>${s}</b>${cb("s","серебро")}${cb("g","золото")}${cb("d","защита")}${cb("b","заблокирован")}</div><div class="nums">${esc(r.st)}</div></div>`}
+h+=`<div class="tg"><div class="row"><span class="tgt">${esc(r.n)}</span>${cp(r.x+","+r.y)}<span class="mono">${r.d} полей</span></div><div class="row u">до города ${esc(r.cn)} ${cp(r.cx+","+r.cy)}</div><div class="row"><span class="rdy rdy-${({"Полностью готов":"full","Без защиты":"nodef","Нужно золото":"gold","Не готов":"no","Заблокирован":"blk"})[s]}">${s}</span>${cb("s","серебро")}${cb("g","золото")}${cb("d","защита")}${cb("b","заблокирован")}</div><div class="nums">${esc(r.st)}</div></div>`}
 document.getElementById("svlist").innerHTML=`<div class="nums" style="padding:6px 0">${["Полностью готов","Без защиты","Нужно золото","Не готов","Заблокирован"].filter(k=>cnt[k]).map(k=>k+" — "+cnt[k]).join(" · ")}</div>`+h};
 draw();document.getElementById("svlist").addEventListener("change",e=>{const c=e.target;if(!c.dataset.sv)return;const r=SV.find(x=>x.n===c.dataset.sv);try{localStorage.setItem(sk(r,c.dataset.f),c.checked?"1":"0")}catch(_){}draw()});}
 render();setInterval(tick,1000);
